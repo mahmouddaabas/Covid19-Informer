@@ -3,16 +3,25 @@ package gui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.json.JSONException;
+import program.Data;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class GUI extends JFrame {
@@ -30,8 +39,10 @@ public class GUI extends JFrame {
     private JButton searchBtn;
     private JTextField countryText;
     private JLabel countryCodeLabel;
+    private JLabel currentDateLabel;
+    private String countryName;
 
-    public GUI() throws IOException {
+    public GUI() throws IOException, JSONException, InterruptedException, ParseException {
 
         createListeners();
         setDefaultData();
@@ -48,7 +59,17 @@ public class GUI extends JFrame {
         setVisible(true);
 
         //sets the focus on the button so the textfields doesnt get reset
-        searchBtn.requestFocusInWindow();
+        searchBtn.requestFocus();
+
+        //Temporarily hide labels because date is not correctly formatted.
+        lastUpdatedLabel.setVisible(false);
+        lastChangedLabel.setVisible(false);
+
+        //Sets the date, its later updated in the SetDefaultData method.
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        //System.out.println(dateFormat.format(date));
+        currentDateLabel.setText(dateFormat.format(date));
     }
 
     {
@@ -153,6 +174,12 @@ public class GUI extends JFrame {
         mainPanel.add(spacer9, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final Spacer spacer10 = new Spacer();
         mainPanel.add(spacer10, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        currentDateLabel = new JLabel();
+        Font currentDateLabelFont = this.$$$getFont$$$(null, -1, 20, currentDateLabel.getFont());
+        if (currentDateLabelFont != null) currentDateLabel.setFont(currentDateLabelFont);
+        currentDateLabel.setForeground(new Color(-393219));
+        currentDateLabel.setText("");
+        mainPanel.add(currentDateLabel, new GridConstraints(0, 5, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -184,15 +211,49 @@ public class GUI extends JFrame {
         return mainPanel;
     }
 
-    public void setDefaultData() {
+    public void setDefaultData() throws InterruptedException, IOException, JSONException, ParseException {
 
-        //temp values
-        confirmedLabel.setText("Confirmed: " + String.valueOf(5));
-        criticalLabel.setText("Critical: " + String.valueOf(5));
-        deathsLabel.setText("Deaths: " + String.valueOf(5));
-        recoveredLabel.setText("Recovered: " + String.valueOf(5));
-        lastChangedLabel.setText("Last Changed:: " + "2021-02-18");
-        lastUpdatedLabel.setText("Last Updated: " + "2021-02-18");
+        //Sets the default global data.
+        Data d = new Data();
+        d.collectGlobalData();
+        confirmedLabel.setText("Confirmed: " + String.valueOf(d.getConfirmed()));
+        criticalLabel.setText("Critical: " + String.valueOf(d.getCritical()));
+        deathsLabel.setText("Deaths: " + String.valueOf(d.getDeaths()));
+        recoveredLabel.setText("Recovered: " + String.valueOf(d.getRecovered()));
+        lastChangedLabel.setText("Last Changed: " + d.getLastChange());
+        lastUpdatedLabel.setText("Last Updated: " + d.getLastUpdate());
+
+        //Sets the current date and updates it with a timer.
+        int delay = 1000; //milliseconds
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = new Date();
+                //System.out.println(dateFormat.format(date));
+                currentDateLabel.setText(dateFormat.format(date));
+            }
+        };
+        new Timer(delay, taskPerformer).start();
+
+    }
+
+    public void setCountryData() throws InterruptedException, IOException, JSONException, ParseException {
+        //Sets the data for a specific country
+        String country = countryText.getText();
+
+        Data d = new Data();
+
+        //Grabs the country name from the textfield and sends it to the Data class in a setter method.
+        //Sets the name before calculation or it will be null.
+        d.setCountryName(country);
+        d.collectCountryData();
+
+        confirmedLabel.setText("Confirmed: " + String.valueOf(d.getConfirmed()));
+        criticalLabel.setText("Critical: " + String.valueOf(d.getCritical()));
+        deathsLabel.setText("Deaths: " + String.valueOf(d.getDeaths()));
+        recoveredLabel.setText("Recovered: " + String.valueOf(d.getRecovered()));
+        lastChangedLabel.setText("Last Changed: " + d.getLastChange());
+        lastUpdatedLabel.setText("Last Updated: " + d.getLastUpdate());
 
     }
 
@@ -201,6 +262,18 @@ public class GUI extends JFrame {
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                try {
+                    setCountryData();
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
 
             }
         });
@@ -221,6 +294,10 @@ public class GUI extends JFrame {
             }
         });
 
+    }
+
+    public String getCountryName() {
+        return this.countryName;
     }
 
     //Background image class (Sets background image).
