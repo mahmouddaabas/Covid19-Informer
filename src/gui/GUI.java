@@ -3,6 +3,7 @@ package gui;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.json.JSONException;
 import program.Data;
 
@@ -13,8 +14,6 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
@@ -28,7 +27,7 @@ public class GUI extends JFrame {
     private JPanel mainPanel;
     private JPanel searchPanel;
     private JLabel searchCountry;
-    private JTextField countryCodeText;
+    private JComboBox countryCodeText;
     private JPanel informationPanel;
     private JLabel confirmedLabel;
     private JLabel criticalLabel;
@@ -36,11 +35,13 @@ public class GUI extends JFrame {
     private JLabel recoveredLabel;
     private JLabel lastChangedLabel;
     private JLabel lastUpdatedLabel;
-    private JButton searchBtn;
-    private JTextField countryText;
+    private JButton searchCodeBtn;
     private JLabel countryCodeLabel;
     private JLabel currentDateLabel;
+    private JLabel countryNameLabel;
+    private JButton searchBtn;
     private String countryName;
+    private JComboBox countryText;
 
     public GUI() throws IOException, JSONException, InterruptedException, ParseException {
 
@@ -51,6 +52,11 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setContentPane(new Background());
         add(mainPanel);
+
+        //Adds auto suggestions to the editable JComboBox with countries and country IPOs.
+        AutoCompleteDecorator.decorate(countryText);
+        AutoCompleteDecorator.decorate(countryCodeText);
+
         searchPanel.setOpaque(false);
         mainPanel.setOpaque(false);
         informationPanel.setOpaque(false);
@@ -59,7 +65,7 @@ public class GUI extends JFrame {
         setVisible(true);
 
         //sets the focus on the button so the textfields doesnt get reset
-        searchBtn.requestFocus();
+        searchCodeBtn.requestFocus();
 
         //Temporarily hide labels because date is not correctly formatted.
         lastUpdatedLabel.setVisible(false);
@@ -90,7 +96,7 @@ public class GUI extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(4, 7, new Insets(0, 0, 0, 0), -1, -1));
         searchPanel = new JPanel();
-        searchPanel.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+        searchPanel.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.add(searchPanel, new GridConstraints(1, 1, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         searchCountry = new JLabel();
         Font searchCountryFont = this.$$$getFont$$$(null, -1, 20, searchCountry.getFont());
@@ -103,18 +109,468 @@ public class GUI extends JFrame {
         if (countryCodeLabelFont != null) countryCodeLabel.setFont(countryCodeLabelFont);
         countryCodeLabel.setForeground(new Color(-393219));
         countryCodeLabel.setText("Search by code:");
-        searchPanel.add(countryCodeLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        countryText = new JTextField();
-        countryText.setForeground(new Color(-10526881));
-        countryText.setText("Example: Sweden");
-        searchPanel.add(countryText, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        countryCodeText = new JTextField();
-        countryCodeText.setForeground(new Color(-9408400));
-        countryCodeText.setText("Example: SE");
-        searchPanel.add(countryCodeText, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        searchPanel.add(countryCodeLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchCodeBtn = new JButton();
+        searchCodeBtn.setText("Search");
+        searchPanel.add(searchCodeBtn, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         searchBtn = new JButton();
         searchBtn.setText("Search");
-        searchPanel.add(searchBtn, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchPanel.add(searchBtn, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        countryCodeText = new JComboBox();
+        countryCodeText.setEditable(true);
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        defaultComboBoxModel1.addElement("AF");
+        defaultComboBoxModel1.addElement("AX");
+        defaultComboBoxModel1.addElement("AL");
+        defaultComboBoxModel1.addElement("DZ");
+        defaultComboBoxModel1.addElement("AS");
+        defaultComboBoxModel1.addElement("AD");
+        defaultComboBoxModel1.addElement("AO");
+        defaultComboBoxModel1.addElement("AI");
+        defaultComboBoxModel1.addElement("AQ");
+        defaultComboBoxModel1.addElement("AG");
+        defaultComboBoxModel1.addElement("AR");
+        defaultComboBoxModel1.addElement("AM");
+        defaultComboBoxModel1.addElement("AW");
+        defaultComboBoxModel1.addElement("AU");
+        defaultComboBoxModel1.addElement("AT");
+        defaultComboBoxModel1.addElement("AZ");
+        defaultComboBoxModel1.addElement("BH");
+        defaultComboBoxModel1.addElement("BS");
+        defaultComboBoxModel1.addElement("BD");
+        defaultComboBoxModel1.addElement("BB");
+        defaultComboBoxModel1.addElement("BY");
+        defaultComboBoxModel1.addElement("BE");
+        defaultComboBoxModel1.addElement("BZ");
+        defaultComboBoxModel1.addElement("BJ");
+        defaultComboBoxModel1.addElement("BM");
+        defaultComboBoxModel1.addElement("BT");
+        defaultComboBoxModel1.addElement("BO");
+        defaultComboBoxModel1.addElement("BQ");
+        defaultComboBoxModel1.addElement("BA");
+        defaultComboBoxModel1.addElement("BW");
+        defaultComboBoxModel1.addElement("BV");
+        defaultComboBoxModel1.addElement("BR");
+        defaultComboBoxModel1.addElement("IO");
+        defaultComboBoxModel1.addElement("BN");
+        defaultComboBoxModel1.addElement("BG");
+        defaultComboBoxModel1.addElement("BF");
+        defaultComboBoxModel1.addElement("BI");
+        defaultComboBoxModel1.addElement("KH");
+        defaultComboBoxModel1.addElement("CM");
+        defaultComboBoxModel1.addElement("CA");
+        defaultComboBoxModel1.addElement("CV");
+        defaultComboBoxModel1.addElement("KY");
+        defaultComboBoxModel1.addElement("CF");
+        defaultComboBoxModel1.addElement("TD");
+        defaultComboBoxModel1.addElement("CL");
+        defaultComboBoxModel1.addElement("CN");
+        defaultComboBoxModel1.addElement("CX");
+        defaultComboBoxModel1.addElement("CC");
+        defaultComboBoxModel1.addElement("CO");
+        defaultComboBoxModel1.addElement("KM");
+        defaultComboBoxModel1.addElement("CG");
+        defaultComboBoxModel1.addElement("CD");
+        defaultComboBoxModel1.addElement("CK");
+        defaultComboBoxModel1.addElement("CR");
+        defaultComboBoxModel1.addElement("CI");
+        defaultComboBoxModel1.addElement("HR");
+        defaultComboBoxModel1.addElement("CU");
+        defaultComboBoxModel1.addElement("CW");
+        defaultComboBoxModel1.addElement("CY");
+        defaultComboBoxModel1.addElement("CZ");
+        defaultComboBoxModel1.addElement("DK");
+        defaultComboBoxModel1.addElement("DJ");
+        defaultComboBoxModel1.addElement("DM");
+        defaultComboBoxModel1.addElement("DO");
+        defaultComboBoxModel1.addElement("EC");
+        defaultComboBoxModel1.addElement("EG");
+        defaultComboBoxModel1.addElement("SV");
+        defaultComboBoxModel1.addElement("GQ");
+        defaultComboBoxModel1.addElement("ER");
+        defaultComboBoxModel1.addElement("EE");
+        defaultComboBoxModel1.addElement("ET");
+        defaultComboBoxModel1.addElement("FK");
+        defaultComboBoxModel1.addElement("FO");
+        defaultComboBoxModel1.addElement("FJ");
+        defaultComboBoxModel1.addElement("FI");
+        defaultComboBoxModel1.addElement("FR");
+        defaultComboBoxModel1.addElement("GF");
+        defaultComboBoxModel1.addElement("PF");
+        defaultComboBoxModel1.addElement("TF");
+        defaultComboBoxModel1.addElement("GA");
+        defaultComboBoxModel1.addElement("GM");
+        defaultComboBoxModel1.addElement("GE");
+        defaultComboBoxModel1.addElement("DE");
+        defaultComboBoxModel1.addElement("GH");
+        defaultComboBoxModel1.addElement("GI");
+        defaultComboBoxModel1.addElement("GR");
+        defaultComboBoxModel1.addElement("GL");
+        defaultComboBoxModel1.addElement("GD");
+        defaultComboBoxModel1.addElement("GP");
+        defaultComboBoxModel1.addElement("GU");
+        defaultComboBoxModel1.addElement("GT");
+        defaultComboBoxModel1.addElement("GG");
+        defaultComboBoxModel1.addElement("GN");
+        defaultComboBoxModel1.addElement("GW");
+        defaultComboBoxModel1.addElement("GY");
+        defaultComboBoxModel1.addElement("HT");
+        defaultComboBoxModel1.addElement("HM");
+        defaultComboBoxModel1.addElement("VA");
+        defaultComboBoxModel1.addElement("HN");
+        defaultComboBoxModel1.addElement("HK");
+        defaultComboBoxModel1.addElement("HU");
+        defaultComboBoxModel1.addElement("IS");
+        defaultComboBoxModel1.addElement("IN");
+        defaultComboBoxModel1.addElement("ID");
+        defaultComboBoxModel1.addElement("IR");
+        defaultComboBoxModel1.addElement("IQ");
+        defaultComboBoxModel1.addElement("IE");
+        defaultComboBoxModel1.addElement("IM");
+        defaultComboBoxModel1.addElement("IL");
+        defaultComboBoxModel1.addElement("IT");
+        defaultComboBoxModel1.addElement("JM");
+        defaultComboBoxModel1.addElement("JP");
+        defaultComboBoxModel1.addElement("JE");
+        defaultComboBoxModel1.addElement("JO");
+        defaultComboBoxModel1.addElement("KZ");
+        defaultComboBoxModel1.addElement("KE");
+        defaultComboBoxModel1.addElement("KI");
+        defaultComboBoxModel1.addElement("KP");
+        defaultComboBoxModel1.addElement("KR");
+        defaultComboBoxModel1.addElement("KW");
+        defaultComboBoxModel1.addElement("KG");
+        defaultComboBoxModel1.addElement("LA");
+        defaultComboBoxModel1.addElement("LV");
+        defaultComboBoxModel1.addElement("LB");
+        defaultComboBoxModel1.addElement("LS");
+        defaultComboBoxModel1.addElement("LR");
+        defaultComboBoxModel1.addElement("LY");
+        defaultComboBoxModel1.addElement("LI");
+        defaultComboBoxModel1.addElement("LT");
+        defaultComboBoxModel1.addElement("LU");
+        defaultComboBoxModel1.addElement("MO");
+        defaultComboBoxModel1.addElement("MK");
+        defaultComboBoxModel1.addElement("MG");
+        defaultComboBoxModel1.addElement("MW");
+        defaultComboBoxModel1.addElement("MY");
+        defaultComboBoxModel1.addElement("MV");
+        defaultComboBoxModel1.addElement("ML");
+        defaultComboBoxModel1.addElement("MT");
+        defaultComboBoxModel1.addElement("MH");
+        defaultComboBoxModel1.addElement("MQ");
+        defaultComboBoxModel1.addElement("MR");
+        defaultComboBoxModel1.addElement("MU");
+        defaultComboBoxModel1.addElement("YT");
+        defaultComboBoxModel1.addElement("MX");
+        defaultComboBoxModel1.addElement("FM");
+        defaultComboBoxModel1.addElement("MD");
+        defaultComboBoxModel1.addElement("MC");
+        defaultComboBoxModel1.addElement("MN");
+        defaultComboBoxModel1.addElement("ME");
+        defaultComboBoxModel1.addElement("MS");
+        defaultComboBoxModel1.addElement("MA");
+        defaultComboBoxModel1.addElement("MZ");
+        defaultComboBoxModel1.addElement("MM");
+        defaultComboBoxModel1.addElement("NA");
+        defaultComboBoxModel1.addElement("NR");
+        defaultComboBoxModel1.addElement("NP");
+        defaultComboBoxModel1.addElement("NL");
+        defaultComboBoxModel1.addElement("NC");
+        defaultComboBoxModel1.addElement("NZ");
+        defaultComboBoxModel1.addElement("NI");
+        defaultComboBoxModel1.addElement("NE");
+        defaultComboBoxModel1.addElement("NG");
+        defaultComboBoxModel1.addElement("NU");
+        defaultComboBoxModel1.addElement("NF");
+        defaultComboBoxModel1.addElement("MP");
+        defaultComboBoxModel1.addElement("NO");
+        defaultComboBoxModel1.addElement("OM");
+        defaultComboBoxModel1.addElement("PK");
+        defaultComboBoxModel1.addElement("PW");
+        defaultComboBoxModel1.addElement("PS");
+        defaultComboBoxModel1.addElement("PA");
+        defaultComboBoxModel1.addElement("PG");
+        defaultComboBoxModel1.addElement("PY");
+        defaultComboBoxModel1.addElement("PE");
+        defaultComboBoxModel1.addElement("PH");
+        defaultComboBoxModel1.addElement("PN");
+        defaultComboBoxModel1.addElement("PL");
+        defaultComboBoxModel1.addElement("PT");
+        defaultComboBoxModel1.addElement("PR");
+        defaultComboBoxModel1.addElement("QA");
+        defaultComboBoxModel1.addElement("RE");
+        defaultComboBoxModel1.addElement("RO");
+        defaultComboBoxModel1.addElement("RU");
+        defaultComboBoxModel1.addElement("RW");
+        defaultComboBoxModel1.addElement("BL");
+        defaultComboBoxModel1.addElement("SH");
+        defaultComboBoxModel1.addElement("KN");
+        defaultComboBoxModel1.addElement("LC");
+        defaultComboBoxModel1.addElement("MF");
+        defaultComboBoxModel1.addElement("PM");
+        defaultComboBoxModel1.addElement("VC");
+        defaultComboBoxModel1.addElement("WS");
+        defaultComboBoxModel1.addElement("SM");
+        defaultComboBoxModel1.addElement("ST");
+        defaultComboBoxModel1.addElement("SA");
+        defaultComboBoxModel1.addElement("SN");
+        defaultComboBoxModel1.addElement("RS");
+        defaultComboBoxModel1.addElement("SC");
+        defaultComboBoxModel1.addElement("SL");
+        defaultComboBoxModel1.addElement("SG");
+        defaultComboBoxModel1.addElement("SX");
+        defaultComboBoxModel1.addElement("SK");
+        defaultComboBoxModel1.addElement("SI");
+        defaultComboBoxModel1.addElement("SB");
+        defaultComboBoxModel1.addElement("SO");
+        defaultComboBoxModel1.addElement("ZA");
+        defaultComboBoxModel1.addElement("GS");
+        defaultComboBoxModel1.addElement("SS");
+        defaultComboBoxModel1.addElement("ES");
+        defaultComboBoxModel1.addElement("LK");
+        defaultComboBoxModel1.addElement("SD");
+        defaultComboBoxModel1.addElement("SR");
+        defaultComboBoxModel1.addElement("SJ");
+        defaultComboBoxModel1.addElement("SZ");
+        defaultComboBoxModel1.addElement("SE");
+        defaultComboBoxModel1.addElement("CH");
+        defaultComboBoxModel1.addElement("SY");
+        defaultComboBoxModel1.addElement("TW");
+        defaultComboBoxModel1.addElement("TJ");
+        defaultComboBoxModel1.addElement("TZ");
+        defaultComboBoxModel1.addElement("TH");
+        defaultComboBoxModel1.addElement("TL");
+        defaultComboBoxModel1.addElement("TG");
+        defaultComboBoxModel1.addElement("TK");
+        defaultComboBoxModel1.addElement("TO");
+        defaultComboBoxModel1.addElement("TT");
+        defaultComboBoxModel1.addElement("TN");
+        defaultComboBoxModel1.addElement("TR");
+        defaultComboBoxModel1.addElement("TM");
+        defaultComboBoxModel1.addElement("TC");
+        defaultComboBoxModel1.addElement("TV");
+        defaultComboBoxModel1.addElement("UG");
+        defaultComboBoxModel1.addElement("UA");
+        defaultComboBoxModel1.addElement("AE");
+        defaultComboBoxModel1.addElement("GB");
+        defaultComboBoxModel1.addElement("US");
+        defaultComboBoxModel1.addElement("UM");
+        defaultComboBoxModel1.addElement("UY");
+        defaultComboBoxModel1.addElement("UZ");
+        defaultComboBoxModel1.addElement("VU");
+        defaultComboBoxModel1.addElement("VE");
+        defaultComboBoxModel1.addElement("VN");
+        defaultComboBoxModel1.addElement("VG");
+        defaultComboBoxModel1.addElement("VI");
+        defaultComboBoxModel1.addElement("WF");
+        defaultComboBoxModel1.addElement("EH");
+        defaultComboBoxModel1.addElement("YE");
+        defaultComboBoxModel1.addElement("ZM");
+        defaultComboBoxModel1.addElement("ZW");
+        countryCodeText.setModel(defaultComboBoxModel1);
+        searchPanel.add(countryCodeText, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        countryText = new JComboBox();
+        countryText.setEditable(true);
+        final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
+        defaultComboBoxModel2.addElement("Afghanistan");
+        defaultComboBoxModel2.addElement("Albania");
+        defaultComboBoxModel2.addElement("Algeria");
+        defaultComboBoxModel2.addElement("Andorra");
+        defaultComboBoxModel2.addElement("Angola");
+        defaultComboBoxModel2.addElement("Antigua & Deps");
+        defaultComboBoxModel2.addElement("Argentina");
+        defaultComboBoxModel2.addElement("Armenia");
+        defaultComboBoxModel2.addElement("Australia");
+        defaultComboBoxModel2.addElement("Austria");
+        defaultComboBoxModel2.addElement("Azerbaijan");
+        defaultComboBoxModel2.addElement("Bahamas");
+        defaultComboBoxModel2.addElement("Bahrain");
+        defaultComboBoxModel2.addElement("Bangladesh");
+        defaultComboBoxModel2.addElement("Barbados");
+        defaultComboBoxModel2.addElement("Belarus");
+        defaultComboBoxModel2.addElement("Belgium");
+        defaultComboBoxModel2.addElement("Belize");
+        defaultComboBoxModel2.addElement("Benin");
+        defaultComboBoxModel2.addElement("Bhutan");
+        defaultComboBoxModel2.addElement("Bolivia");
+        defaultComboBoxModel2.addElement("Bosnia Herzegovina");
+        defaultComboBoxModel2.addElement("Botswana");
+        defaultComboBoxModel2.addElement("Brazil");
+        defaultComboBoxModel2.addElement("Brunei");
+        defaultComboBoxModel2.addElement("Bulgaria");
+        defaultComboBoxModel2.addElement("Burkina");
+        defaultComboBoxModel2.addElement("Burundi");
+        defaultComboBoxModel2.addElement("Cambodia");
+        defaultComboBoxModel2.addElement("Cameroon");
+        defaultComboBoxModel2.addElement("Canada");
+        defaultComboBoxModel2.addElement("Cape Verde");
+        defaultComboBoxModel2.addElement("Central African Rep");
+        defaultComboBoxModel2.addElement("Chad");
+        defaultComboBoxModel2.addElement("Chile");
+        defaultComboBoxModel2.addElement("China");
+        defaultComboBoxModel2.addElement("Colombia");
+        defaultComboBoxModel2.addElement("Comoros");
+        defaultComboBoxModel2.addElement("Congo");
+        defaultComboBoxModel2.addElement("Congo {Democratic Rep}");
+        defaultComboBoxModel2.addElement("Costa Rica");
+        defaultComboBoxModel2.addElement("Croatia");
+        defaultComboBoxModel2.addElement("Cuba");
+        defaultComboBoxModel2.addElement("Cyprus");
+        defaultComboBoxModel2.addElement("Czech Republic");
+        defaultComboBoxModel2.addElement("Denmark");
+        defaultComboBoxModel2.addElement("Djibouti");
+        defaultComboBoxModel2.addElement("Dominica");
+        defaultComboBoxModel2.addElement("Dominican Republic");
+        defaultComboBoxModel2.addElement("East Timor");
+        defaultComboBoxModel2.addElement("Ecuador");
+        defaultComboBoxModel2.addElement("Egypt");
+        defaultComboBoxModel2.addElement("El Salvador");
+        defaultComboBoxModel2.addElement("Equatorial Guinea");
+        defaultComboBoxModel2.addElement("Eritrea");
+        defaultComboBoxModel2.addElement("Estonia");
+        defaultComboBoxModel2.addElement("Ethiopia");
+        defaultComboBoxModel2.addElement("Fiji");
+        defaultComboBoxModel2.addElement("Finland");
+        defaultComboBoxModel2.addElement("France");
+        defaultComboBoxModel2.addElement("Gabon");
+        defaultComboBoxModel2.addElement("Gambia");
+        defaultComboBoxModel2.addElement("Georgia");
+        defaultComboBoxModel2.addElement("Germany");
+        defaultComboBoxModel2.addElement("Ghana");
+        defaultComboBoxModel2.addElement("Greece");
+        defaultComboBoxModel2.addElement("Grenada");
+        defaultComboBoxModel2.addElement("Guatemala");
+        defaultComboBoxModel2.addElement("Guinea");
+        defaultComboBoxModel2.addElement("Guinea-Bissau");
+        defaultComboBoxModel2.addElement("Guyana");
+        defaultComboBoxModel2.addElement("Haiti");
+        defaultComboBoxModel2.addElement("Honduras");
+        defaultComboBoxModel2.addElement("Hungary");
+        defaultComboBoxModel2.addElement("Iceland");
+        defaultComboBoxModel2.addElement("India");
+        defaultComboBoxModel2.addElement("Indonesia");
+        defaultComboBoxModel2.addElement("Iran");
+        defaultComboBoxModel2.addElement("Iraq");
+        defaultComboBoxModel2.addElement("Ireland {Republic}");
+        defaultComboBoxModel2.addElement("Israel");
+        defaultComboBoxModel2.addElement("Italy");
+        defaultComboBoxModel2.addElement("Ivory Coast");
+        defaultComboBoxModel2.addElement("Jamaica");
+        defaultComboBoxModel2.addElement("Japan");
+        defaultComboBoxModel2.addElement("Jordan");
+        defaultComboBoxModel2.addElement("Kazakhstan");
+        defaultComboBoxModel2.addElement("Kenya");
+        defaultComboBoxModel2.addElement("Kiribati");
+        defaultComboBoxModel2.addElement("Korea North");
+        defaultComboBoxModel2.addElement("Korea South");
+        defaultComboBoxModel2.addElement("Kosovo");
+        defaultComboBoxModel2.addElement("Kuwait");
+        defaultComboBoxModel2.addElement("Kyrgyzstan");
+        defaultComboBoxModel2.addElement("Laos");
+        defaultComboBoxModel2.addElement("Latvia");
+        defaultComboBoxModel2.addElement("Lebanon");
+        defaultComboBoxModel2.addElement("Lesotho");
+        defaultComboBoxModel2.addElement("Liberia");
+        defaultComboBoxModel2.addElement("Libya");
+        defaultComboBoxModel2.addElement("Liechtenstein");
+        defaultComboBoxModel2.addElement("Lithuania");
+        defaultComboBoxModel2.addElement("Luxembourg");
+        defaultComboBoxModel2.addElement("Macedonia");
+        defaultComboBoxModel2.addElement("Madagascar");
+        defaultComboBoxModel2.addElement("Malawi");
+        defaultComboBoxModel2.addElement("Malaysia");
+        defaultComboBoxModel2.addElement("Maldives");
+        defaultComboBoxModel2.addElement("Mali");
+        defaultComboBoxModel2.addElement("Malta");
+        defaultComboBoxModel2.addElement("Marshall Islands");
+        defaultComboBoxModel2.addElement("Mauritania");
+        defaultComboBoxModel2.addElement("Mauritius");
+        defaultComboBoxModel2.addElement("Mexico");
+        defaultComboBoxModel2.addElement("Micronesia");
+        defaultComboBoxModel2.addElement("Moldova");
+        defaultComboBoxModel2.addElement("Monaco");
+        defaultComboBoxModel2.addElement("Mongolia");
+        defaultComboBoxModel2.addElement("Montenegro");
+        defaultComboBoxModel2.addElement("Morocco");
+        defaultComboBoxModel2.addElement("Mozambique");
+        defaultComboBoxModel2.addElement("Myanmar, {Burma}");
+        defaultComboBoxModel2.addElement("Namibia");
+        defaultComboBoxModel2.addElement("Nauru");
+        defaultComboBoxModel2.addElement("Nepal");
+        defaultComboBoxModel2.addElement("Netherlands");
+        defaultComboBoxModel2.addElement("New Zealand");
+        defaultComboBoxModel2.addElement("Nicaragua");
+        defaultComboBoxModel2.addElement("Niger");
+        defaultComboBoxModel2.addElement("Nigeria");
+        defaultComboBoxModel2.addElement("Norway");
+        defaultComboBoxModel2.addElement("Oman");
+        defaultComboBoxModel2.addElement("Pakistan");
+        defaultComboBoxModel2.addElement("Palau");
+        defaultComboBoxModel2.addElement("Panama");
+        defaultComboBoxModel2.addElement("Papua New Guinea");
+        defaultComboBoxModel2.addElement("Paraguay");
+        defaultComboBoxModel2.addElement("Peru");
+        defaultComboBoxModel2.addElement("Philippines");
+        defaultComboBoxModel2.addElement("Poland");
+        defaultComboBoxModel2.addElement("Portugal");
+        defaultComboBoxModel2.addElement("Qatar");
+        defaultComboBoxModel2.addElement("Romania");
+        defaultComboBoxModel2.addElement("Russian Federation");
+        defaultComboBoxModel2.addElement("Rwanda");
+        defaultComboBoxModel2.addElement("St Kitts & Nevis");
+        defaultComboBoxModel2.addElement("St Lucia");
+        defaultComboBoxModel2.addElement("Saint Vincent & the Grenadines");
+        defaultComboBoxModel2.addElement("Samoa");
+        defaultComboBoxModel2.addElement("San Marino");
+        defaultComboBoxModel2.addElement("Sao Tome & Principe");
+        defaultComboBoxModel2.addElement("Saudi Arabia");
+        defaultComboBoxModel2.addElement("Senegal");
+        defaultComboBoxModel2.addElement("Serbia");
+        defaultComboBoxModel2.addElement("Seychelles");
+        defaultComboBoxModel2.addElement("Sierra Leone");
+        defaultComboBoxModel2.addElement("Singapore");
+        defaultComboBoxModel2.addElement("Slovakia");
+        defaultComboBoxModel2.addElement("Slovenia");
+        defaultComboBoxModel2.addElement("Solomon Islands");
+        defaultComboBoxModel2.addElement("Somalia");
+        defaultComboBoxModel2.addElement("South Africa");
+        defaultComboBoxModel2.addElement("South Sudan");
+        defaultComboBoxModel2.addElement("Spain");
+        defaultComboBoxModel2.addElement("Sri Lanka");
+        defaultComboBoxModel2.addElement("Sudan");
+        defaultComboBoxModel2.addElement("Suriname");
+        defaultComboBoxModel2.addElement("Swaziland");
+        defaultComboBoxModel2.addElement("Sweden");
+        defaultComboBoxModel2.addElement("Switzerland");
+        defaultComboBoxModel2.addElement("Syria");
+        defaultComboBoxModel2.addElement("Taiwan");
+        defaultComboBoxModel2.addElement("Tajikistan");
+        defaultComboBoxModel2.addElement("Tanzania");
+        defaultComboBoxModel2.addElement("Thailand");
+        defaultComboBoxModel2.addElement("Togo");
+        defaultComboBoxModel2.addElement("Tonga");
+        defaultComboBoxModel2.addElement("Trinidad & Tobago");
+        defaultComboBoxModel2.addElement("Tunisia");
+        defaultComboBoxModel2.addElement("Turkey");
+        defaultComboBoxModel2.addElement("Turkmenistan");
+        defaultComboBoxModel2.addElement("Tuvalu");
+        defaultComboBoxModel2.addElement("Uganda");
+        defaultComboBoxModel2.addElement("Ukraine");
+        defaultComboBoxModel2.addElement("United Arab Emirates");
+        defaultComboBoxModel2.addElement("United Kingdom");
+        defaultComboBoxModel2.addElement("United States");
+        defaultComboBoxModel2.addElement("Uruguay");
+        defaultComboBoxModel2.addElement("Uzbekistan");
+        defaultComboBoxModel2.addElement("Vanuatu");
+        defaultComboBoxModel2.addElement("Vatican City");
+        defaultComboBoxModel2.addElement("Venezuela");
+        defaultComboBoxModel2.addElement("Vietnam");
+        defaultComboBoxModel2.addElement("Yemen");
+        defaultComboBoxModel2.addElement("Zambia");
+        defaultComboBoxModel2.addElement("Zimbabwe");
+        countryText.setModel(defaultComboBoxModel2);
+        searchPanel.add(countryText, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         informationPanel = new JPanel();
         informationPanel.setLayout(new GridLayoutManager(8, 4, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.add(informationPanel, new GridConstraints(1, 5, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -129,25 +585,25 @@ public class GUI extends JFrame {
         confirmedLabel = new JLabel();
         Font confirmedLabelFont = this.$$$getFont$$$(null, -1, 20, confirmedLabel.getFont());
         if (confirmedLabelFont != null) confirmedLabel.setFont(confirmedLabelFont);
-        confirmedLabel.setForeground(new Color(-393219));
+        confirmedLabel.setForeground(new Color(-18927));
         confirmedLabel.setText("Confirmed:");
         informationPanel.add(confirmedLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         criticalLabel = new JLabel();
         Font criticalLabelFont = this.$$$getFont$$$(null, -1, 20, criticalLabel.getFont());
         if (criticalLabelFont != null) criticalLabel.setFont(criticalLabelFont);
-        criticalLabel.setForeground(new Color(-393219));
+        criticalLabel.setForeground(new Color(-31219));
         criticalLabel.setText("Critical:");
         informationPanel.add(criticalLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deathsLabel = new JLabel();
         Font deathsLabelFont = this.$$$getFont$$$(null, -1, 20, deathsLabel.getFont());
         if (deathsLabelFont != null) deathsLabel.setFont(deathsLabelFont);
-        deathsLabel.setForeground(new Color(-393219));
+        deathsLabel.setForeground(new Color(-64256));
         deathsLabel.setText("Deaths:");
         informationPanel.add(deathsLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         recoveredLabel = new JLabel();
         Font recoveredLabelFont = this.$$$getFont$$$(null, -1, 20, recoveredLabel.getFont());
         if (recoveredLabelFont != null) recoveredLabel.setFont(recoveredLabelFont);
-        recoveredLabel.setForeground(new Color(-393219));
+        recoveredLabel.setForeground(new Color(-10027254));
         recoveredLabel.setText("Recovered:");
         informationPanel.add(recoveredLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         lastChangedLabel = new JLabel();
@@ -162,6 +618,12 @@ public class GUI extends JFrame {
         lastUpdatedLabel.setForeground(new Color(-393219));
         lastUpdatedLabel.setText("Last Updated");
         informationPanel.add(lastUpdatedLabel, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        countryNameLabel = new JLabel();
+        Font countryNameLabelFont = this.$$$getFont$$$(null, -1, 20, countryNameLabel.getFont());
+        if (countryNameLabelFont != null) countryNameLabel.setFont(countryNameLabelFont);
+        countryNameLabel.setForeground(new Color(-393219));
+        countryNameLabel.setText("- Global Information -");
+        informationPanel.add(countryNameLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer5 = new Spacer();
         mainPanel.add(spacer5, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer6 = new Spacer();
@@ -178,7 +640,7 @@ public class GUI extends JFrame {
         Font currentDateLabelFont = this.$$$getFont$$$(null, -1, 20, currentDateLabel.getFont());
         if (currentDateLabelFont != null) currentDateLabel.setFont(currentDateLabelFont);
         currentDateLabel.setForeground(new Color(-393219));
-        currentDateLabel.setText("");
+        currentDateLabel.setText("date");
         mainPanel.add(currentDateLabel, new GridConstraints(0, 5, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
@@ -239,7 +701,7 @@ public class GUI extends JFrame {
 
     public void setCountryData() throws InterruptedException, IOException, JSONException, ParseException {
         //Sets the data for a specific country
-        String country = countryText.getText();
+        String country = (String) countryText.getSelectedItem();
 
         Data d = new Data();
 
@@ -254,10 +716,33 @@ public class GUI extends JFrame {
         recoveredLabel.setText("Recovered: " + String.valueOf(d.getRecovered()));
         lastChangedLabel.setText("Last Changed: " + d.getLastChange());
         lastUpdatedLabel.setText("Last Updated: " + d.getLastUpdate());
+        countryNameLabel.setText("- " + country + " -");
+
+    }
+
+    public void setCountryDataByCode() throws InterruptedException, IOException, JSONException, ParseException {
+        //Sets the data for a specific country by its code.
+        String countryCode = (String) countryCodeText.getSelectedItem();
+
+        Data d = new Data();
+
+        //Grabs the country code from the textfield and sends it to the Data class in a setter method.
+        //Sets the name before calculation or it will be null.
+        d.setCountryCode(countryCode);
+        d.collectCountryDataByCode();
+
+        confirmedLabel.setText("Confirmed: " + String.valueOf(d.getConfirmed()));
+        criticalLabel.setText("Critical: " + String.valueOf(d.getCritical()));
+        deathsLabel.setText("Deaths: " + String.valueOf(d.getDeaths()));
+        recoveredLabel.setText("Recovered: " + String.valueOf(d.getRecovered()));
+        lastChangedLabel.setText("Last Changed: " + d.getLastChange());
+        lastUpdatedLabel.setText("Last Updated: " + d.getLastUpdate());
+        countryNameLabel.setText("- " + countryCode + " -");
 
     }
 
     public void createListeners() {
+
 
         searchBtn.addActionListener(new ActionListener() {
             @Override
@@ -278,10 +763,30 @@ public class GUI extends JFrame {
             }
         });
 
-        countryText.addFocusListener(new FocusAdapter() {
+        searchCodeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    setCountryDataByCode();
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+
+            }
+        });
+
+        //Changes to Editable combobox for auto suggestions, doesnt work anymore.
+        /*countryText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                countryText.setText("");
+                //countryText.setText("");
                 countryText.setForeground(Color.BLACK);
             }
         });
@@ -289,10 +794,10 @@ public class GUI extends JFrame {
         countryCodeText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                countryCodeText.setText("");
+                //countryCodeText.setText("");
                 countryCodeText.setForeground(Color.BLACK);
             }
-        });
+        });*/
 
     }
 
@@ -317,7 +822,7 @@ public class GUI extends JFrame {
 
                 //Use this to set image from URL.
                 URL url = new URL(
-                        "https://www.miun.se/imagevault/publishedmedia/4j5w951mnbf6uetzuspd/36224954-corona-viruses-3d-inside-an-organism-Hannu_Viitanen.jpg");
+                        "https://i.gyazo.com/37cdbaef6518afa1cf231e00cf921d7d.jpg");
                 image = ImageIO.read(url);
 
             } catch (Exception e) {
