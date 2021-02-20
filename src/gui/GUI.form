@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="9d244" binding="searchPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="9d244" binding="searchPanel" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="1" column="1" row-span="2" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -28,7 +28,7 @@
           </component>
           <component id="530bf" class="javax.swing.JLabel" binding="countryCodeLabel">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="20"/>
@@ -49,7 +49,7 @@
           </component>
           <component id="b111a" class="javax.swing.JTextField" binding="countryCodeText">
             <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
@@ -58,9 +58,17 @@
               <text value="Example: SE"/>
             </properties>
           </component>
-          <component id="5699a" class="javax.swing.JButton" binding="searchBtn">
+          <component id="5699a" class="javax.swing.JButton" binding="searchCodeBtn">
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Search"/>
+            </properties>
+          </component>
+          <component id="d0591" class="javax.swing.JButton" binding="searchBtn">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Search"/>
@@ -102,7 +110,7 @@
             </constraints>
             <properties>
               <font size="20"/>
-              <foreground color="-393219"/>
+              <foreground color="-18927"/>
               <text value="Confirmed:"/>
             </properties>
           </component>
@@ -112,7 +120,7 @@
             </constraints>
             <properties>
               <font size="20"/>
-              <foreground color="-393219"/>
+              <foreground color="-31219"/>
               <text value="Critical:"/>
             </properties>
           </component>
@@ -122,7 +130,7 @@
             </constraints>
             <properties>
               <font size="20"/>
-              <foreground color="-393219"/>
+              <foreground color="-64256"/>
               <text value="Deaths:"/>
             </properties>
           </component>
@@ -132,7 +140,7 @@
             </constraints>
             <properties>
               <font size="20"/>
-              <foreground color="-393219"/>
+              <foreground color="-10027254"/>
               <text value="Recovered:"/>
             </properties>
           </component>
@@ -154,6 +162,16 @@
               <font size="20"/>
               <foreground color="-393219"/>
               <text value="Last Updated"/>
+            </properties>
+          </component>
+          <component id="aff87" class="javax.swing.JLabel" binding="countryNameLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="20"/>
+              <foreground color="-393219"/>
+              <text value="- Global Information -"/>
             </properties>
           </component>
         </children>
@@ -195,7 +213,7 @@
         <properties>
           <font size="20"/>
           <foreground color="-393219"/>
-          <text value=""/>
+          <text value="date"/>
         </properties>
       </component>
     </children>

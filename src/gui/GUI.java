@@ -36,10 +36,12 @@ public class GUI extends JFrame {
     private JLabel recoveredLabel;
     private JLabel lastChangedLabel;
     private JLabel lastUpdatedLabel;
-    private JButton searchBtn;
+    private JButton searchCodeBtn;
     private JTextField countryText;
     private JLabel countryCodeLabel;
     private JLabel currentDateLabel;
+    private JLabel countryNameLabel;
+    private JButton searchBtn;
     private String countryName;
 
     public GUI() throws IOException, JSONException, InterruptedException, ParseException {
@@ -59,7 +61,7 @@ public class GUI extends JFrame {
         setVisible(true);
 
         //sets the focus on the button so the textfields doesnt get reset
-        searchBtn.requestFocus();
+        searchCodeBtn.requestFocus();
 
         //Temporarily hide labels because date is not correctly formatted.
         lastUpdatedLabel.setVisible(false);
@@ -90,7 +92,7 @@ public class GUI extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(4, 7, new Insets(0, 0, 0, 0), -1, -1));
         searchPanel = new JPanel();
-        searchPanel.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+        searchPanel.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.add(searchPanel, new GridConstraints(1, 1, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         searchCountry = new JLabel();
         Font searchCountryFont = this.$$$getFont$$$(null, -1, 20, searchCountry.getFont());
@@ -103,7 +105,7 @@ public class GUI extends JFrame {
         if (countryCodeLabelFont != null) countryCodeLabel.setFont(countryCodeLabelFont);
         countryCodeLabel.setForeground(new Color(-393219));
         countryCodeLabel.setText("Search by code:");
-        searchPanel.add(countryCodeLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchPanel.add(countryCodeLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         countryText = new JTextField();
         countryText.setForeground(new Color(-10526881));
         countryText.setText("Example: Sweden");
@@ -111,10 +113,13 @@ public class GUI extends JFrame {
         countryCodeText = new JTextField();
         countryCodeText.setForeground(new Color(-9408400));
         countryCodeText.setText("Example: SE");
-        searchPanel.add(countryCodeText, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        searchPanel.add(countryCodeText, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        searchCodeBtn = new JButton();
+        searchCodeBtn.setText("Search");
+        searchPanel.add(searchCodeBtn, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         searchBtn = new JButton();
         searchBtn.setText("Search");
-        searchPanel.add(searchBtn, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchPanel.add(searchBtn, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         informationPanel = new JPanel();
         informationPanel.setLayout(new GridLayoutManager(8, 4, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.add(informationPanel, new GridConstraints(1, 5, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -129,25 +134,25 @@ public class GUI extends JFrame {
         confirmedLabel = new JLabel();
         Font confirmedLabelFont = this.$$$getFont$$$(null, -1, 20, confirmedLabel.getFont());
         if (confirmedLabelFont != null) confirmedLabel.setFont(confirmedLabelFont);
-        confirmedLabel.setForeground(new Color(-393219));
+        confirmedLabel.setForeground(new Color(-18927));
         confirmedLabel.setText("Confirmed:");
         informationPanel.add(confirmedLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         criticalLabel = new JLabel();
         Font criticalLabelFont = this.$$$getFont$$$(null, -1, 20, criticalLabel.getFont());
         if (criticalLabelFont != null) criticalLabel.setFont(criticalLabelFont);
-        criticalLabel.setForeground(new Color(-393219));
+        criticalLabel.setForeground(new Color(-31219));
         criticalLabel.setText("Critical:");
         informationPanel.add(criticalLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deathsLabel = new JLabel();
         Font deathsLabelFont = this.$$$getFont$$$(null, -1, 20, deathsLabel.getFont());
         if (deathsLabelFont != null) deathsLabel.setFont(deathsLabelFont);
-        deathsLabel.setForeground(new Color(-393219));
+        deathsLabel.setForeground(new Color(-64256));
         deathsLabel.setText("Deaths:");
         informationPanel.add(deathsLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         recoveredLabel = new JLabel();
         Font recoveredLabelFont = this.$$$getFont$$$(null, -1, 20, recoveredLabel.getFont());
         if (recoveredLabelFont != null) recoveredLabel.setFont(recoveredLabelFont);
-        recoveredLabel.setForeground(new Color(-393219));
+        recoveredLabel.setForeground(new Color(-10027254));
         recoveredLabel.setText("Recovered:");
         informationPanel.add(recoveredLabel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         lastChangedLabel = new JLabel();
@@ -162,6 +167,12 @@ public class GUI extends JFrame {
         lastUpdatedLabel.setForeground(new Color(-393219));
         lastUpdatedLabel.setText("Last Updated");
         informationPanel.add(lastUpdatedLabel, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        countryNameLabel = new JLabel();
+        Font countryNameLabelFont = this.$$$getFont$$$(null, -1, 20, countryNameLabel.getFont());
+        if (countryNameLabelFont != null) countryNameLabel.setFont(countryNameLabelFont);
+        countryNameLabel.setForeground(new Color(-393219));
+        countryNameLabel.setText("- Global Information -");
+        informationPanel.add(countryNameLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer5 = new Spacer();
         mainPanel.add(spacer5, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final Spacer spacer6 = new Spacer();
@@ -178,7 +189,7 @@ public class GUI extends JFrame {
         Font currentDateLabelFont = this.$$$getFont$$$(null, -1, 20, currentDateLabel.getFont());
         if (currentDateLabelFont != null) currentDateLabel.setFont(currentDateLabelFont);
         currentDateLabel.setForeground(new Color(-393219));
-        currentDateLabel.setText("");
+        currentDateLabel.setText("date");
         mainPanel.add(currentDateLabel, new GridConstraints(0, 5, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
@@ -254,10 +265,33 @@ public class GUI extends JFrame {
         recoveredLabel.setText("Recovered: " + String.valueOf(d.getRecovered()));
         lastChangedLabel.setText("Last Changed: " + d.getLastChange());
         lastUpdatedLabel.setText("Last Updated: " + d.getLastUpdate());
+        countryNameLabel.setText("- " + country + " -");
+
+    }
+
+    public void setCountryDataByCode() throws InterruptedException, IOException, JSONException, ParseException {
+        //Sets the data for a specific country by its code.
+        String countryCode = countryCodeText.getText();
+
+        Data d = new Data();
+
+        //Grabs the country code from the textfield and sends it to the Data class in a setter method.
+        //Sets the name before calculation or it will be null.
+        d.setCountryCode(countryCode);
+        d.collectCountryDataByCode();
+
+        confirmedLabel.setText("Confirmed: " + String.valueOf(d.getConfirmed()));
+        criticalLabel.setText("Critical: " + String.valueOf(d.getCritical()));
+        deathsLabel.setText("Deaths: " + String.valueOf(d.getDeaths()));
+        recoveredLabel.setText("Recovered: " + String.valueOf(d.getRecovered()));
+        lastChangedLabel.setText("Last Changed: " + d.getLastChange());
+        lastUpdatedLabel.setText("Last Updated: " + d.getLastUpdate());
+        countryNameLabel.setText("- " + countryCode + " -");
 
     }
 
     public void createListeners() {
+
 
         searchBtn.addActionListener(new ActionListener() {
             @Override
@@ -265,6 +299,25 @@ public class GUI extends JFrame {
 
                 try {
                     setCountryData();
+                } catch (InterruptedException interruptedException) {
+                    interruptedException.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                } catch (JSONException jsonException) {
+                    jsonException.printStackTrace();
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+
+            }
+        });
+
+        searchCodeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    setCountryDataByCode();
                 } catch (InterruptedException interruptedException) {
                     interruptedException.printStackTrace();
                 } catch (IOException ioException) {
@@ -317,7 +370,7 @@ public class GUI extends JFrame {
 
                 //Use this to set image from URL.
                 URL url = new URL(
-                        "https://www.miun.se/imagevault/publishedmedia/4j5w951mnbf6uetzuspd/36224954-corona-viruses-3d-inside-an-organism-Hannu_Viitanen.jpg");
+                        "https://i.gyazo.com/37cdbaef6518afa1cf231e00cf921d7d.jpg");
                 image = ImageIO.read(url);
 
             } catch (Exception e) {
